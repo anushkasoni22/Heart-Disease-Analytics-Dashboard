@@ -31,7 +31,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 
 ### 🏠 Home: The Command Center
 *An executive summary providing a centralized navigation hub and high-level key metrics.*
-![Home Page](0_Home_Overview.png)
 
 ---
 
@@ -39,7 +38,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 *Who is most at risk? A breakdown of age, gender, and perception.*
 * **Visuals:** Impact of Smoking, Heart Risk by Sleep Duration, Risk by Age Group.
 * **Key Insight:** analyzed the gap between "Health Perception vs. Reality".
-![Descriptive](1_Descriptive_Analysis.png)
 
 ---
 
@@ -48,7 +46,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 * **Hotspots:** US Geographic Risk Map.
 * **Critical Factors:** Impact of **Lung Disease (COPD)**, **Mental Health**, and **Oral Health (Teeth Loss)** on heart risk.
 * **Mobility:** Risk analysis based on Walking Difficulty.
-![Geo Risk](2_Risk_Factors_2022.png)
 
 ---
 
@@ -57,7 +54,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 * **The Lifestyle Paradox:** Is "Sitting" worse than Smoking?
 * **Root Cause Analysis:** How multiple conditions (Comorbidities) multiply the risk factor.
 * **Warning Signs:** The impact of Chest Pain (Angina).
-![Lifestyle](3_Lifestyle_Paradox.png)
 
 ---
 
@@ -65,7 +61,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 *Correlating physical attributes with disease probability.*
 * **Metrics:** Average BMI Score & Smoker Ratios.
 * **Visuals:** BMI vs. Physical Activity, Risk by Kidney Status, and Stroke History impact.
-![Drivers](4_Drivers_of_Disease.png)
 
 ---
 
@@ -73,7 +68,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 *Using Power BI's Key Influencers to find hidden patterns.*
 * **Root Cause Analysis:** Automated insights identifying Top Factors (Age Category, Race, General Health) that increase risk.
 * **Slicers:** Dynamic filtering by Age, Sex, and Smoking status.
-![AI Insights](5_AI_Insights.png)
 
 ---
 
@@ -82,7 +76,6 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 * **Simulation Engine:** Sliders to adjust **Physical Activity %**, **Smoking %**, and **Obesity %**.
 * **Outcome:** A dynamic bar chart showing **"Current vs. Projected Impact"** and a counter for **"Lives Potentially Saved"**.
 * **Strategy:** Recommendation Box with actionable health steps.
-![Simulation](6_Simulation_Engine.png)
 
 ---
 
@@ -106,3 +99,4 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 ⭐ <b>If you found this analysis insightful, please give this repo a star!</b> ⭐
 
 </div>
+

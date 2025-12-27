@@ -14,9 +14,7 @@
 ## 📽️ Project Demo
 > **"Admin restrictions won't stop the insights!"** Since publishing to the web is restricted, here is a full video walkthrough of the interactive simulation engine and analysis.
 
-https://github.com/user-attachments/assets/YOUR-VIDEO-LINK-WILL-GO-HERE
-*(Note: Use the .mp4 file provided in the repository if the player above doesn't load)*
-
+[▶️ Watch Full Dashboard Demo (Google Drive Link)](https://drive.google.com/file/d/14qC33lMVLTstbZSffObQmyu6fRydWdtt/view?usp=sharing)
 ---
 
 ## 📖 Project Overview
@@ -106,4 +104,5 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 ---
 <div align="center">
 ⭐ <b>If you found this analysis insightful, please give this repo a star!</b> ⭐
+
 </div>

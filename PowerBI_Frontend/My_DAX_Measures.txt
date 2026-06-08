@@ -1,0 +1,126 @@
+DEFINE
+    MEASURE 'Key Measures'[Total People] = COUNTROWS('Master_Data')
+    MEASURE 'Key Measures'[Heart Disease %] = DIVIDE(
+    CALCULATE([Total People], 'Master_Data'[HeartDisease] = "Yes"),
+    [Total People]
+)
+    MEASURE 'Key Measures'[Total Cases] = CALCULATE([Total People], 'Master_Data'[HeartDisease] = "Yes")
+    MEASURE 'Key Measures'[State Risk %] = DIVIDE(
+    CALCULATE(COUNTROWS('heart_2022_no_nans'), 'heart_2022_no_nans'[HadHeartAttack] = "Yes"),
+    COUNTROWS('heart_2022_no_nans')
+)
+    MEASURE 'Key Measures'[Total People 2022] = COUNTROWS('heart_2022_no_nans')
+    MEASURE 'Key Measures'[Heart Patients 2022] = CALCULATE(COUNTROWS('heart_2022_no_nans'), 'heart_2022_no_nans'[HadHeartAttack] = "Yes")
+    MEASURE 'Key Measures'[Risk_LossOfDignity] = CALCULATE([State Risk %], 'heart_2022_no_nans'[DifficultyDressingBathing] = "Yes")
+    MEASURE 'Key Measures'[Risk_LossOfFreedom] = CALCULATE([State Risk %], 'heart_2022_no_nans'[DifficultyErrands] = "Yes")
+    MEASURE 'Key Measures'[Risk_SocialAnxiety] = CALCULATE([State Risk %], 'heart_2022_no_nans'[RemovedTeeth] = "All")
+    MEASURE 'Key Measures'[Risk_Deaf] = CALCULATE([State Risk %], 'heart_2022_no_nans'[DeafOrHardOfHearing] = "Yes")
+    MEASURE 'Key Measures'[Risk_Blind] = CALCULATE([State Risk %], 'heart_2022_no_nans'[BlindOrVisionDifficulty] = "Yes")
+    MEASURE 'Key Measures'[Average BMI] = AVERAGE('Master_Data'[BMI])
+    MEASURE 'Key Measures'[Smokers % in Patients] = VAR TotalHeartPatients = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes")
+
+VAR SmokingHeartPatients = CALCULATE(
+    COUNTROWS('Master_Data'), 
+    'Master_Data'[HeartDisease] = "Yes",
+    'Master_Data'[Smoking] IN {"Yes", "Current smoker - now smokes every day", "Current smoker - now smokes some days"}
+)
+
+RETURN
+DIVIDE(SmokingHeartPatients, TotalHeartPatients, 0)
+    MEASURE 'Key Measures'[Impact_Smoking_Real] = VAR Risk_Smokers = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes", 'Master_Data'[Smoking] = "Yes") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[Smoking] = "Yes")
+VAR Risk_NonSmokers = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes", 'Master_Data'[Smoking] = "No") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[Smoking] = "No")
+RETURN 
+Risk_Smokers - Risk_NonSmokers
+    MEASURE 'Key Measures'[Impact_BMI_Real] = VAR Risk_Obese = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes", 'Master_Data'[BMI] >= 30) / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[BMI] >= 30)
+VAR Risk_Normal = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes", 'Master_Data'[BMI] < 25) / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[BMI] < 25)
+RETURN 
+Risk_Obese - Risk_Normal
+    MEASURE 'Key Measures'[Impact_Activity_Real] = VAR Risk_Inactive = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes", 'Master_Data'[PhysicalActivity] = "No") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[PhysicalActivity] = "No")
+VAR Risk_Active = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes", 'Master_Data'[PhysicalActivity] = "Yes") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[PhysicalActivity] = "Yes")
+RETURN 
+Risk_Inactive - Risk_Active
+    MEASURE 'Key Measures'[Potential Lives Saved] = -- 1. Count Target Groups (Smokers, Inactive, Obese)
+VAR Count_Smokers = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[Smoking] = "Yes")
+VAR Count_Inactive = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[PhysicalActivity] = "No")
+VAR Count_Obese = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[BMI] >= 30)
+
+-- 2. Calculate Lives Saved (Formula: People Changed * Impact Factor)
+VAR Saved_Smoking = (Count_Smokers * 'Reduce Smoking %'[Reduce Smoking % Value]) * [Impact_Smoking_Real]
+VAR Saved_Activity = (Count_Inactive * 'Increase Physical Activity %'[Increase Physical Activity % Value]) * [Impact_Activity_Real]
+VAR Saved_BMI = (Count_Obese * 'Reduce Obesity %'[Reduce Obesity % Value]) * [Impact_BMI_Real]
+
+-- 3. Total Sum
+RETURN 
+INT(Saved_Smoking + Saved_Activity + Saved_BMI)
+    MEASURE 'Key Measures'[Projected Heart Disease Cases] = VAR Current_Cases = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease] = "Yes")
+RETURN 
+Current_Cases - [Potential Lives Saved]
+    MEASURE 'Key Measures'[Risk_Diabetic] = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[Diabetic]="Yes") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[Diabetic]="Yes")
+    MEASURE 'Key Measures'[Risk_Kidney] = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[KidneyDisease]="Yes") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[KidneyDisease]="Yes")
+    MEASURE 'Key Measures'[Risk_Walking] = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[DifficultyWalking]="Yes") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[DifficultyWalking]="Yes")
+    MEASURE 'Key Measures'[Risk_SkinCancer] = CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[SkinCancer]="Yes") / CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[SkinCancer]="Yes")
+    MEASURE 'Key Measures'[% with Kidney Disease] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[KidneyDisease]="Yes"),
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes")
+)
+    MEASURE 'Key Measures'[% with Stroke History] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[Stroke]="Yes"),
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes")
+)
+    MEASURE 'Key Measures'[% with Skin Cancer] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[SkinCancer]="Yes"),
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes")
+)
+    MEASURE 'Key Measures'[% with Walking Difficulty] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[DifficultyWalking]="Yes"),
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes")
+)
+    MEASURE 'Key Measures'[% with Asthma] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[Asthma]="Yes"),
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes")
+)
+    MEASURE 'Key Measures'[% Heart Patients with Diabetes] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes", 'Master_Data'[Diabetic]="Yes"),
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes")
+)
+    MEASURE 'Key Measures'[Total Participants] = COUNTROWS('Master_Data')
+    MEASURE 'Key Measures'[Overall HD Rate] = DIVIDE(
+    CALCULATE(COUNTROWS('Master_Data'), 'Master_Data'[HeartDisease]="Yes"),
+    COUNTROWS('Master_Data')
+)
+    MEASURE 'Key Measures'[Average BMI Score] = AVERAGE('Master_Data'[BMI])
+
+EVALUATE
+    SUMMARIZECOLUMNS(
+        "Total People", [Total People],
+        "Heart Disease %", [Heart Disease %],
+        "Total Cases", [Total Cases],
+        "State Risk %", [State Risk %],
+        "Total People 2022", [Total People 2022],
+        "Heart Patients 2022", [Heart Patients 2022],
+        "Risk_LossOfDignity", [Risk_LossOfDignity],
+        "Risk_LossOfFreedom", [Risk_LossOfFreedom],
+        "Risk_SocialAnxiety", [Risk_SocialAnxiety],
+        "Risk_Deaf", [Risk_Deaf],
+        "Risk_Blind", [Risk_Blind],
+        "Average BMI", [Average BMI],
+        "Smokers % in Patients", [Smokers % in Patients],
+        "Impact_Smoking_Real", [Impact_Smoking_Real],
+        "Impact_BMI_Real", [Impact_BMI_Real],
+        "Impact_Activity_Real", [Impact_Activity_Real],
+        "Potential Lives Saved", [Potential Lives Saved],
+        "Projected Heart Disease Cases", [Projected Heart Disease Cases],
+        "Risk_Diabetic", [Risk_Diabetic],
+        "Risk_Kidney", [Risk_Kidney],
+        "Risk_Walking", [Risk_Walking],
+        "Risk_SkinCancer", [Risk_SkinCancer],
+        "% with Kidney Disease", [% with Kidney Disease],
+        "% with Stroke History", [% with Stroke History],
+        "% with Skin Cancer", [% with Skin Cancer],
+        "% with Walking Difficulty", [% with Walking Difficulty],
+        "% with Asthma", [% with Asthma],
+        "% Heart Patients with Diabetes", [% Heart Patients with Diabetes],
+        "Total Participants", [Total Participants],
+        "Overall HD Rate", [Overall HD Rate],
+        "Average BMI Score", [Average BMI Score]
+    )

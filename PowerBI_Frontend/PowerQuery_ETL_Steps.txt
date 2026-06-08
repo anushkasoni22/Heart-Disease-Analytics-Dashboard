@@ -1,0 +1,55 @@
+Code for 2020- 
+
+let
+    Source = Csv.Document(File.Contents("C:\Users\lenovo\Downloads\archive\2020\heart_2020_cleaned.csv"),[Delimiter=",", Columns=18, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"HeartDisease", type text}, {"BMI", type number}, {"Smoking", type text}, {"AlcoholDrinking", type text}, {"Stroke", type text}, {"PhysicalHealth", Int64.Type}, {"MentalHealth", Int64.Type}, {"DiffWalking", type text}, {"Sex", type text}, {"AgeCategory", type text}, {"Race", type text}, {"Diabetic", type text}, {"PhysicalActivity", type text}, {"GenHealth", type text}, {"SleepTime", Int64.Type}, {"Asthma", type text}, {"KidneyDisease", type text}, {"SkinCancer", type text}}),
+    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"DiffWalking", "DifficultyWalking"}}),
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Year", each 2020),
+    #"Renamed Columns1" = Table.RenameColumns(#"Added Custom",{{"GenHealth", "GeneralHealth"}})
+in
+    #"Renamed Columns1"
+
+Code for 2022-
+let
+    Source = Csv.Document(File.Contents("C:\Users\lenovo\Downloads\archive\2022\heart_2022_no_nans.csv"),[Delimiter=",", Columns=40, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"State", type text}, {"Sex", type text}, {"GeneralHealth", type text}, {"PhysicalHealthDays", Int64.Type}, {"MentalHealthDays", Int64.Type}, {"LastCheckupTime", type text}, {"PhysicalActivities", type text}, {"SleepHours", Int64.Type}, {"RemovedTeeth", type text}, {"HadHeartAttack", type text}, {"HadAngina", type text}, {"HadStroke", type text}, {"HadAsthma", type text}, {"HadSkinCancer", type text}, {"HadCOPD", type text}, {"HadDepressiveDisorder", type text}, {"HadKidneyDisease", type text}, {"HadArthritis", type text}, {"HadDiabetes", type text}, {"DeafOrHardOfHearing", type text}, {"BlindOrVisionDifficulty", type text}, {"DifficultyConcentrating", type text}, {"DifficultyWalking", type text}, {"DifficultyDressingBathing", type text}, {"DifficultyErrands", type text}, {"SmokerStatus", type text}, {"ECigaretteUsage", type text}, {"ChestScan", type text}, {"RaceEthnicityCategory", type text}, {"AgeCategory", type text}, {"HeightInMeters", type number}, {"WeightInKilograms", type number}, {"BMI", type number}, {"AlcoholDrinkers", type text}, {"HIVTesting", type text}, {"FluVaxLast12", type text}, {"PneumoVaxEver", type text}, {"TetanusLast10Tdap", type text}, {"HighRiskLastYear", type text}, {"CovidPos", type text}}),
+    #"Added Custom" = Table.AddColumn(#"Changed Type", "Year", each 2022),
+    #"Removed Columns" = Table.RemoveColumns(#"Added Custom",{"CovidPos", "HighRiskLastYear", "TetanusLast10Tdap", "PneumoVaxEver", "FluVaxLast12", "HIVTesting"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"AlcoholDrinkers", "AlcoholDrinking"}}),
+    #"Removed Columns1" = Table.RemoveColumns(#"Renamed Columns",{"WeightInKilograms", "HeightInMeters"}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns1",{{"RaceEthnicityCategory", "Race"}}),
+    #"Removed Columns2" = Table.RemoveColumns(#"Renamed Columns1",{"ChestScan", "ECigaretteUsage"}),
+    #"Renamed Columns2" = Table.RenameColumns(#"Removed Columns2",{{"SmokerStatus", "Smoking"}}),
+    #"Removed Columns3" = Table.RemoveColumns(#"Renamed Columns2",{"DifficultyErrands", "DifficultyDressingBathing", "DifficultyConcentrating", "BlindOrVisionDifficulty", "DeafOrHardOfHearing"}),
+    #"Renamed Columns3" = Table.RenameColumns(#"Removed Columns3",{{"HadDiabetes", "Diabetic"}}),
+    #"Removed Columns4" = Table.RemoveColumns(#"Renamed Columns3",{"HadArthritis"}),
+    #"Renamed Columns4" = Table.RenameColumns(#"Removed Columns4",{{"HadKidneyDisease", "KidneyDisease"}}),
+    #"Removed Columns5" = Table.RemoveColumns(#"Renamed Columns4",{"HadDepressiveDisorder", "HadCOPD"}),
+    #"Renamed Columns5" = Table.RenameColumns(#"Removed Columns5",{{"HadSkinCancer", "SkinCancer"}, {"HadAsthma", "Asthma"}, {"HadStroke", "Stroke"}}),
+    #"Removed Columns6" = Table.RemoveColumns(#"Renamed Columns5",{"HadAngina"}),
+    #"Renamed Columns6" = Table.RenameColumns(#"Removed Columns6",{{"HadHeartAttack", "HeartDisease"}}),
+    #"Removed Columns7" = Table.RemoveColumns(#"Renamed Columns6",{"RemovedTeeth"}),
+    #"Renamed Columns7" = Table.RenameColumns(#"Removed Columns7",{{"SleepHours", "SleepTime"}, {"PhysicalActivities", "PhysicalActivity"}}),
+    #"Removed Columns8" = Table.RemoveColumns(#"Renamed Columns7",{"LastCheckupTime"}),
+    #"Renamed Columns8" = Table.RenameColumns(#"Removed Columns8",{{"MentalHealthDays", "MentalHealth"}, {"PhysicalHealthDays", "PhysicalHealth"}}),
+    #"Removed Columns9" = Table.RemoveColumns(#"Renamed Columns8",{"State"}),
+    #"Replaced Value" = Table.ReplaceValue(#"Removed Columns9","Current smoker - now smokes every day","Yes",Replacer.ReplaceText,{"Smoking"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Current smoker - now smokes some days","Yes",Replacer.ReplaceText,{"Smoking"}),
+    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Former smoker","No",Replacer.ReplaceText,{"Smoking"}),
+    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","Never smoked","No",Replacer.ReplaceText,{"Smoking"}),
+    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Age ","",Replacer.ReplaceText,{"AgeCategory"}),
+    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","to","-",Replacer.ReplaceText,{"AgeCategory"}),
+    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","only, Non-Hispanic","",Replacer.ReplaceText,{"Race"}),
+    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","Multiracial, Non-Hispanic","Other",Replacer.ReplaceText,{"Race"}),
+    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7","No, pre-diabetes or borderline diabetes","No, borderline diabetes",Replacer.ReplaceText,{"Diabetic"}),
+    #"Replaced Value9" = Table.ReplaceValue(#"Replaced Value8","Yes, but only during pregnancy (female)","Yes (during pregnancy) ",Replacer.ReplaceText,{"Diabetic"}),
+    #"Replaced Value10" = Table.ReplaceValue(#"Replaced Value9"," - ","-",Replacer.ReplaceText,{"AgeCategory"})
+in
+    #"Replaced Value10"
+
+let
+    Source = Table.Combine({heart_2020_cleaned, #"22_for_master"})
+in
+    Source

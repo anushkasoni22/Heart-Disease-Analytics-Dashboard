@@ -3,6 +3,9 @@
 # 🫀 Heart Disease Analytics Dashboard
 ### A Data-Driven Approach to Saving Lives (CDC Data 2020 & 2022)
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Machine_Learning-Scikit_Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
 ![Power BI](https://img.shields.io/badge/Power_BI-Desktop-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 ![Analysis](https://img.shields.io/badge/Analysis-Predictive_%26_Descriptive-2874A6?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
@@ -15,12 +18,23 @@
 ---
 
 ## 📖 Project Overview
-This project is an end-to-end analytics dashboard designed to identify key drivers of heart disease and simulate the impact of lifestyle changes. Using a massive dataset from the **CDC (2020 & 2022)**, it moves beyond simple charts to provide **Predictive AI Insights** and **Prescriptive Strategies**.
+This project is an end-to-end analytics dashboard designed to identify key drivers of heart disease and simulate the impact of lifestyle changes. Using a massive dataset from the **CDC (2020 & 2022)**, it moves beyond simple charts to provide **Predictive AI Insights** and **Prescriptive Strategies**. 
 
 ### 🎯 Key Objectives:
+* **Automate Data Processing:** Build a robust Python/SQL backend to clean, merge, and impute over 500k+ records.
 * **Analyze** the correlation between lifestyle choices (Smoking, Sleep, BMI) and Heart Health.
 * **Identify** high-risk demographics and comorbidity hotspots.
 * **Simulate** how reducing obesity and smoking rates can mathematically lower disease prevalence.
+
+---
+
+## 🧠 Backend Data Architecture & Machine Learning (Python/SQL)
+To make the predictive models highly accurate and address real-world data anomalies, a custom automated backend pipeline was engineered before feeding the data into Power BI:
+
+* **SQL In-Memory Database (`sqlite3`):** Avoided Disk I/O bottlenecks by loading raw CSVs into RAM. Executed `UNION ALL` SQL queries to align, rename, and merge the 2020 and 2022 datasets in milliseconds.
+* **Optimized KNN Imputation:** Handled missing numerical data without triggering $O(N^2)$ memory crashes by training the `KNNImputer` on a representative sample before applying it to the entire 566k+ dataset.
+* **Bias Mitigation (Sick Quitter Effect):** Corrected statistical illusions in the CDC data where severe patients quit drinking, falsely making alcohol appear protective. This was manually adjusted in the modeling phase to ensure the hospital-grade calculator does not provide dangerous medical recommendations.
+* **Class-Balanced Probabilistic Scoring:** Addressed severe class imbalance (95% healthy, 5% diseased) using a calibrated **Logistic Regression** model with `class_weight='balanced'`. Used `predict_proba()` to generate a realistic and wide risk spread (1% to 99%) for the dynamic Power BI dashboard parameters.
 
 ---
 
@@ -79,6 +93,8 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 ## 🛠️ Tech Stack & Workflow
 | Category | Tools & Techniques Used |
 | :--- | :--- |
+| **Backend Data Pipeline** | Python (Pandas, `sqlite3`), SQL (In-Memory Database) |
+| **Machine Learning** | Scikit-Learn (Logistic Regression, KNN Imputer, Probability Calibration) |
 | **Tool** | Microsoft Power BI Desktop |
 | **Data Processing** | Power Query (ETL), Data Cleaning, Merging 2020 & 2022 datasets |
 | **Analysis** | DAX (Data Analysis Expressions), Measures, Calculated Columns |
@@ -96,5 +112,3 @@ This project is an end-to-end analytics dashboard designed to identify key drive
 ⭐ <b>If you found this analysis insightful, please give this repo a star!</b> ⭐
 
 </div>
-
-
